@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Borp-It!</string>
+    <string name="rules">Watch the caller for the current action. Use the buttons to perform the action. Long click for Borp. Swipe for pull. Pinch zoom for twist </string>
+</resources>
