@@ -2,9 +2,8 @@ package com.example.guest.borp_it;
 
 
 import android.animation.ObjectAnimator;
-import android.graphics.drawable.Drawable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.view.ScaleGestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -15,9 +14,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.OverScroller;
 import android.widget.RelativeLayout;
-import android.widget.Scroller;
 import android.widget.TextView;
 
 import java.util.Random;
@@ -30,16 +27,14 @@ public class GameActivity extends AppCompatActivity {
 
     @Bind(R.id.borpButton) Button mBorpButton;
     @Bind(R.id.flingImageButton) ImageButton mFlingImageButton;
-    @Bind(R.id.zoomFab) FloatingActionButton mZoomFab;
+    @Bind(R.id.zoomFab) ScaleableButton mZoomFab;
     @Bind(R.id.promptTextView) TextView mPromptTextView;
     @Bind(R.id.container) RelativeLayout mainScreen;
     private String[] mPrompts;
     private Random mRandom;
     private String mCurrentPrompt;
     private GestureDetectorCompat mDetector;
-
     private ScaleGestureDetector mScaleDetector;
-    private float mScaleFactor = 1.f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +46,7 @@ public class GameActivity extends AppCompatActivity {
         mPrompts = new String[] {"Borp", "Pull", "Twist"};
         generatePrompt();
         mDetector = new GestureDetectorCompat(this, new BoomerangGestureListener());
-        mScaleDetector = new ScaleGestureDetector(this, new ScaleListener());
+        mScaleDetector = mZoomFab.mScaleDetector;
 
         mBorpButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -74,13 +69,18 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-
+        mZoomFab.setOnTouchListener(new View.OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event){
+                Log.v(TAG, "touched fab");
+                mScaleDetector.onTouchEvent(event);
+                return true;
+            }
+        });
 
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
-        mScaleDetector.onTouchEvent(event);
         this.mDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
